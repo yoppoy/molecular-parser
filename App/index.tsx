@@ -9,8 +9,7 @@ import {
   StatusBar,
   Keyboard,
   Animated,
-  Dimensions,
-  ImageBackground
+  ImageBackground,
 } from 'react-native';
 import AtomDisplay from './components/AtomDisplay';
 import {findAtoms} from './helpers/molecularParser';
@@ -29,7 +28,7 @@ const ANIMATED_OUT_CONFIG = {
 
 interface State {
   text: string;
-  atoms: { [key: string]: number } | null;
+  atoms: {[key: string]: number} | null;
   error: string | null;
 };
 
@@ -49,22 +48,15 @@ const Index = () => {
     inputRange: [0, 1],
     outputRange: [200, 250],
   });
-  const animatedOpacity = animatedValueRef.current.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 0],
-  });
 
   function onPress() {
-    let atoms: { [key: string]: number } = {};
-
     Keyboard.dismiss();
     if (state.atoms === null) {
       try {
-        atoms = findAtoms(state.text);
-        setState({...state, atoms: atoms, error: null});
+        setState({...state, atoms: findAtoms(state.text), error: null});
         Animated.timing(animatedValueRef.current, ANIMATED_IN_CONFIG).start();
       } catch (e) {
-        setState({...state, error: 'Please enter a valid formula'});
+        setState({...state, error: 'Please enter a valid molecule'});
       }
     } else {
       Animated.timing(animatedValueRef.current, ANIMATED_OUT_CONFIG).start(() => {
@@ -77,12 +69,12 @@ const Index = () => {
     <ImageBackground source={require('../assets/background.jpg')} style={{width: '100%', height: '100%'}}>
       <View style={styles.mainContainer}>
         <StatusBar backgroundColor='#61d38a' barStyle="light-content"/>
-        <Animated.View style={{alignItems: 'center', height: animatedHeight, alignSelf: 'stretch'}}>
-          <Animated.View style={{marginBottom: 10, alignSelf: 'stretch'}}>
+        <Animated.View style={{alignItems: 'center', alignSelf: 'stretch', height: animatedHeight}}>
+          <View style={{marginBottom: 10, alignSelf: 'stretch'}}>
             <TextInput
               onFocus={() => {
                 Animated.timing(animatedValueRef.current, ANIMATED_OUT_CONFIG).start(() => {
-                  setState({...state, atoms: null, error: null, text: ''});
+                  setState({...state, atoms: null, error: null});
                 });
               }}
               onChangeText={text => setState({...state, text})}
@@ -95,11 +87,8 @@ const Index = () => {
             {state.error && (
               <Text style={styles.textError}>{state.error}</Text>
             )}
-          </Animated.View>
-          <Animated.View
-            style={{
-              width: animatedWidth,
-            }}>
+          </View>
+          <Animated.View style={{width: animatedWidth}}>
             <TouchableOpacity style={styles.button} activeOpacity={0.5} onPress={onPress}>
               <Text style={styles.buttonText}>{state.atoms === null ? 'COUNT ATOMS' : 'RESET'}</Text>
             </TouchableOpacity>

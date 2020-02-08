@@ -1,9 +1,17 @@
 import React, {useRef, useState, useEffect} from 'react';
-import {Animated, Easing, StyleSheet, Text, View, Dimensions} from 'react-native';
+import {Animated, Easing, StyleSheet, Text, View} from 'react-native';
 
-interface Props {
-  atoms: { [key: string]: number } | null;
-}
+const ANIMATE_IN_CONFIG = {
+  toValue: 1,
+  duration: 250,
+  easing: Easing.out(Easing.ease),
+};
+
+const ANIMATE_OUT_CONFIG = {
+  toValue: 0,
+  duration: 250,
+  easing: Easing.ease,
+};
 
 export default function AtomDisplay({atoms}: Props) {
   const [atomsDisplayed, setAtomsDisplayed] = useState<{ [key: string]: number } | null>(null);
@@ -20,61 +28,69 @@ export default function AtomDisplay({atoms}: Props) {
 
   useEffect(() => {
     if (atoms !== null) {
-      appear(atoms);
+      slideIn(atoms);
     } else {
-      dissapear();
+      slideOut();
     }
   }, [atoms]);
 
-  function appear(atoms: { [key: string]: number }) {
+  function slideIn(atoms: { [key: string]: number }) {
     setAtomsDisplayed(atoms);
-    Animated.timing(animatedValueRef.current, {
-      toValue: 1,
-      duration: 250,
-      easing: Easing.out(Easing.ease),
-    }).start();
+    Animated.timing(animatedValueRef.current, ANIMATE_IN_CONFIG).start();
   }
 
-  function dissapear() {
-    Animated.timing(animatedValueRef.current, {
-      toValue: 0,
-      duration: 250,
-      easing: Easing.ease,
-    }).start(() => {
+  function slideOut() {
+    Animated.timing(animatedValueRef.current, ANIMATE_OUT_CONFIG).start(() => {
       setAtomsDisplayed(null);
     });
   }
 
   return (
-    <Animated.View style={{marginTop: 10, flexDirection: 'row', transform: [{translateY: animatedTranslate}], opacity: animatedOpacity}}>
-      {atomsDisplayed !== null &&
-      Object.keys(atomsDisplayed).map(key => {
-        return (
-          <View style={styles.atomContainer} key={key}>
-            <View style={styles.atomBubble}>
-              <Text style={styles.atomName}>{key}</Text>
-            </View>
-            <Text style={styles.atomCount}>{atomsDisplayed[key]}</Text>
-          </View>
-        );
-      })}
+    <Animated.View
+      style={{
+        justifyContent: 'center',
+        transform: [{translateY: animatedTranslate}],
+        opacity: animatedOpacity
+      }}>
+      <View style={styles.mainContainer}>
+        {atomsDisplayed !== null && (
+          Object.keys(atomsDisplayed).map(key => {
+            return (
+              <View style={styles.atomContainer} key={key}>
+                <View style={styles.atomBubble}>
+                  <Text style={styles.atomName}>{key}</Text>
+                </View>
+                <Text style={styles.atomCount}>{atomsDisplayed[key]}</Text>
+              </View>
+            );
+          }))}
+      </View>
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  atomContainer: {
+  mainContainer: {
     marginTop: 10,
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  atomContainer: {
+    margin: 10,
+    flexDirection: 'row',
     paddingVertical: 5,
-    paddingHorizontal: 15,
+    paddingHorizontal: 5,
+    backgroundColor: '#61d38a',
+    borderRadius: 30,
+    elevation: 1,
   },
   atomCount: {
     color: 'white',
     fontSize: 18,
     fontFamily: 'Montserrat-Bold',
     alignSelf: 'center',
-    marginLeft: 10,
+    marginHorizontal: 10,
   },
   atomBubble: {
     backgroundColor: '#1b1e80',
@@ -90,3 +106,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
 });
+
+interface Props {
+  atoms: { [key: string]: number } | null;
+}

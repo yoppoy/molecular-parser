@@ -1,21 +1,3 @@
-interface Node {
-  type: NodeType;
-  atom: string;
-  count: number;
-}
-
-enum NodeType {
-  Atom,
-  Open,
-  Close,
-}
-
-export enum FormulaError {
-  INVALID,
-  EMPTY,
-  BRACKET_NOT_CLOSED,
-}
-
 function createStack(formula: string): Node[] {
   let formatted = formula.replace(/[{(]/g, '[').replace(/[})]/g, ']');
   let stack: Node[] = [];
@@ -99,4 +81,22 @@ export function findAtoms(formula: string) {
   stack = createStack(formula);
   stack = parseStack(stack);
   return countAtoms(stack);
+}
+
+interface Node {
+  type: NodeType;
+  atom: string;
+  count: number;
+}
+
+enum NodeType {
+  Atom,
+  Open,
+  Close,
+}
+
+export enum FormulaError {
+  INVALID,
+  EMPTY,
+  BRACKET_NOT_CLOSED,
 }
