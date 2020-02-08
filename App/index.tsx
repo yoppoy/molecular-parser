@@ -68,7 +68,7 @@ const Index = () => {
       }
     } else {
       Animated.timing(animatedValueRef.current, ANIMATED_OUT_CONFIG).start(() => {
-        setState({...state, atoms: null, text: '', error: null});
+        setState({...state, atoms: null, error: null});
       });
     }
   }
@@ -84,6 +84,7 @@ const Index = () => {
             placeholder={'Molecule'}
             placeholderTextColor={'#D7CCC8'}
             style={styles.textInput}
+            selectTextOnFocus
           />
           {state.error && (
             <Text style={styles.textError}>{state.error}</Text>
