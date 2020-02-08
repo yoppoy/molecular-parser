@@ -1,4 +1,4 @@
 # molecular_parser
-A react native app with a refined UI/UX to calculate the different numbers of atoms in a molecule.
+A simple yet aesthetic react native app to calculate the numbers of atoms present in a molecule.
 ![](./demo/demo.gif)
 
