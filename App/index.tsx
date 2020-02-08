@@ -11,7 +11,7 @@ import {
   Animated,
   Dimensions,
 } from 'react-native';
-import AtomDisplay from './AtomDisplay';
+import AtomDisplay from './components/AtomDisplay';
 import {findAtoms} from './helpers/molecularParser';
 
 const ANIMATED_IN_CONFIG = {
@@ -48,6 +48,10 @@ const Index = () => {
     inputRange: [0, 1],
     outputRange: [200, 250],
   });
+  const animatedOpacity = animatedValueRef.current.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 0],
+  });
 
   function onPress() {
     let atoms: { [key: string]: number } = {};
@@ -60,11 +64,11 @@ const Index = () => {
         setState({...state, atoms: atoms});
         Animated.timing(animatedValueRef.current, ANIMATED_IN_CONFIG).start();
       } catch (e) {
-        setState({...state, error: e});
+        setState({...state, error: 'Please enter a valid formula'});
       }
     } else {
       Animated.timing(animatedValueRef.current, ANIMATED_OUT_CONFIG).start(() => {
-        setState({...state, atoms: null});
+        setState({...state, atoms: null, text: '', error: null});
       });
     }
   }
@@ -73,7 +77,7 @@ const Index = () => {
     <View style={styles.mainContainer}>
       <StatusBar backgroundColor="#121212" barStyle="light-content"/>
       <Animated.View style={{alignItems: 'center', height: animatedHeight}}>
-        <View style={{marginBottom: 10}}>
+        <Animated.View style={{marginBottom: 10, opacity: animatedOpacity}}>
           <TextInput
             onChangeText={text => setState({...state, text})}
             value={state.text}
@@ -84,7 +88,7 @@ const Index = () => {
           {state.error && (
             <Text style={styles.textError}>{state.error}</Text>
           )}
-        </View>
+        </Animated.View>
         <Animated.View
           style={{
             width: animatedWidth,

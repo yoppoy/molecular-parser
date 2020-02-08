@@ -1,4 +1,4 @@
-import {findAtoms} from '../molecularParser';
+import {findAtoms, FormulaError} from '../molecularParser';
 
 test('H', () => {
   expect(findAtoms('H')).toEqual({H: 1});
@@ -34,4 +34,25 @@ test('Mg(OH)2', () => {
 
 test('Fe(NO3)2', () => {
   expect(findAtoms('Fe(NO3)2')).toEqual({Fe: 1, N: 2, O: 6});
+});
+
+test('Error : Bracket not closed : Fe(NO3', () => {
+  const t = () => {
+    findAtoms('Fe(NO3');
+  };
+  expect(t).toThrow(FormulaError.BRACKET_NOT_CLOSED.toString());
+});
+
+test('Error : Empty input', () => {
+  const t = () => {
+    findAtoms('');
+  };
+  expect(t).toThrow(FormulaError.EMPTY.toString());
+});
+
+test('Error : Invalid molecule : mg2', () => {
+  const t = () => {
+    findAtoms('h');
+  };
+  expect(t).toThrow(FormulaError.INVALID.toString());
 });

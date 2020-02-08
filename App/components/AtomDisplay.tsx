@@ -2,10 +2,11 @@ import React, {useRef, useState, useEffect} from 'react';
 import {Animated, Easing, StyleSheet, Text, View, Dimensions} from 'react-native';
 
 interface Props {
-  atoms: any;
+  atoms: { [key: string]: number };
 }
 
 export default function AtomDisplay({atoms}: Props) {
+  const [atomsDisplayed, setAtomsDisplayed] = useState(null);
   const animatedValue = new Animated.Value(0);
   const animatedValueRef = useRef(animatedValue);
   const animatedOpacity = animatedValueRef.current.interpolate({
@@ -19,40 +20,40 @@ export default function AtomDisplay({atoms}: Props) {
 
   useEffect(() => {
     if (atoms !== null) {
-      appear();
+      appear(atoms);
     } else {
       dissapear();
     }
   }, [atoms]);
 
-  function appear() {
+  function appear(atoms) {
+    setAtomsDisplayed(atoms);
     Animated.timing(animatedValueRef.current, {
       toValue: 1,
       duration: 250,
       easing: Easing.out(Easing.ease),
-      delay: 100,
-    }).start(() => {
-    });
+    }).start();
   }
 
   function dissapear() {
     Animated.timing(animatedValueRef.current, {
       toValue: 0,
       duration: 250,
-      easing: Easing.linear,
-      delay: 100,
-    }).start();
+      easing: Easing.ease,
+    }).start(() => {
+      setAtomsDisplayed(null);
+    });
   }
 
   return (
     <Animated.View style={{transform: [{translateY: animatedTranslate}], opacity: animatedOpacity}}>
-      {atoms !== null && Object.keys(atoms).map(
+      {atomsDisplayed !== null && Object.keys(atomsDisplayed).map(
         key => {
           return (
             <View style={styles.atomContainer} key={key}>
               <Text style={[styles.atomText, {fontWeight: 'bold'}]}>{key}</Text>
               <Text style={styles.atomText}> --------> </Text>
-              <Text style={styles.atomText}>{atoms[key]}</Text>
+              <Text style={styles.atomText}>{atomsDisplayed[key]}</Text>
             </View>
           );
         })}
@@ -65,7 +66,8 @@ const styles = StyleSheet.create({
   atomContainer: {
     marginTop: 10,
     flexDirection: 'row',
-    height: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
   },
   atomText: {
     color: 'white',

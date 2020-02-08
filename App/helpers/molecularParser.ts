@@ -10,6 +10,12 @@ enum NodeType {
   Close,
 }
 
+export enum FormulaError {
+  INVALID,
+  EMPTY,
+  BRACKET_NOT_CLOSED,
+}
+
 function createStack(formula: string): Node[] {
   let formatted = formula.replace(/[{(]/g, '[').replace(/[})]/g, ']');
   let stack: Node[] = [];
@@ -17,7 +23,7 @@ function createStack(formula: string): Node[] {
   let matches;
 
   if (formula.length === 0) {
-    throw 'No text enterred';
+    throw FormulaError.EMPTY;
   }
   while ((matches = regex.exec(formatted))) {
     let [, , open, close, atomName, count] = matches;
@@ -53,9 +59,9 @@ function findBracket(stack: Node[], bracketType: NodeType, startPosition: number
 function parseStack(stack: Node[], position: number = 0, bracketOpened: boolean = false): Node[] {
   let bracketIndex: number;
 
-  console.log('Parsing stack : ', position, bracketOpened, stack.length);
-  if (position === stack.length)
-    throw 'Invalid molecule';
+  if (position === stack.length) {
+    throw FormulaError.INVALID;
+  }
   for (let index = position; index < stack.length; index++) {
     if ((bracketIndex = findBracket(stack, NodeType.Open, position)) >= position) {
       stack = parseStack(stack, bracketIndex + 1, true);
@@ -64,7 +70,7 @@ function parseStack(stack: Node[], position: number = 0, bracketOpened: boolean 
       bracketIndex = findBracket(stack, NodeType.Close, position);
       debugger;
       if (bracketIndex === -1) {
-        throw 'Bracket not closed';
+        throw FormulaError.BRACKET_NOT_CLOSED;
       } else {
         for (let a = position; a < bracketIndex; a++) {
           stack[a].count = stack[a].count * stack[bracketIndex].count;
