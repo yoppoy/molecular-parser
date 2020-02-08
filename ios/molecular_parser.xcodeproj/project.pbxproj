@@ -20,6 +20,8 @@
 		2F7625E1BD064D5652FAEF32 /* libPods-molecular_parser-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 868F47D309BC6092DD4BD37A /* libPods-molecular_parser-tvOS.a */; };
 		B6205EABAD1AFF3B8293B170 /* libPods-molecular_parser-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 322BAC7D54F4B0F19834C17E /* libPods-molecular_parser-tvOSTests.a */; };
 		BF800951FC698D50A55C415D /* libPods-molecular_parser.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B625094D017A044A69C42ED6 /* libPods-molecular_parser.a */; };
+		5E975A8050A048E1BEAC93F9 /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F063D7FF62E444AA7232D45 /* Montserrat-Bold.ttf */; };
+		15B85D70CA66478C9400CBCC /* Montserrat-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DAB11B33A1C748598FFE8678 /* Montserrat-Black.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +69,8 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F0DEF41CE735E228FD5D763E /* Pods-molecular_parser-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-molecular_parser-tvOS.release.xcconfig"; path = "Target Support Files/Pods-molecular_parser-tvOS/Pods-molecular_parser-tvOS.release.xcconfig"; sourceTree = "<group>"; };
+		3F063D7FF62E444AA7232D45 /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; name = "Montserrat-Bold.ttf"; path = "../assets/fonts/Montserrat-Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DAB11B33A1C748598FFE8678 /* Montserrat-Black.ttf */ = {isa = PBXFileReference; name = "Montserrat-Black.ttf"; path = "../assets/fonts/Montserrat-Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +169,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				9074F3C063D4600B6DE2C31C /* Pods */,
+				38DE998F640841908CC8D942 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -197,6 +202,16 @@
 			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		38DE998F640841908CC8D942 /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				3F063D7FF62E444AA7232D45 /* Montserrat-Bold.ttf */,
+				DAB11B33A1C748598FFE8678 /* Montserrat-Black.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -285,7 +300,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0940;
+				LastUpgradeCheck = 940;
 				ORGANIZATIONNAME = Facebook;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
@@ -338,6 +353,8 @@
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
+				5E975A8050A048E1BEAC93F9 /* Montserrat-Bold.ttf in Resources */,
+				15B85D70CA66478C9400CBCC /* Montserrat-Black.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

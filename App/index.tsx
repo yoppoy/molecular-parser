@@ -10,6 +10,7 @@ import {
   Keyboard,
   Animated,
   Dimensions,
+  ImageBackground
 } from 'react-native';
 import AtomDisplay from './components/AtomDisplay';
 import {findAtoms} from './helpers/molecularParser';
@@ -57,50 +58,56 @@ const Index = () => {
     let atoms: { [key: string]: number } = {};
 
     Keyboard.dismiss();
-    setState({...state, error: null});
     if (state.atoms === null) {
       try {
         atoms = findAtoms(state.text);
-        setState({...state, atoms: atoms});
+        setState({...state, atoms: atoms, error: null});
         Animated.timing(animatedValueRef.current, ANIMATED_IN_CONFIG).start();
       } catch (e) {
         setState({...state, error: 'Please enter a valid formula'});
       }
     } else {
       Animated.timing(animatedValueRef.current, ANIMATED_OUT_CONFIG).start(() => {
-        setState({...state, atoms: null, error: null});
+        setState({...state, atoms: null, error: null, text: ''});
       });
     }
   }
 
   return (
-    <View style={styles.mainContainer}>
-      <StatusBar backgroundColor="#121212" barStyle="light-content"/>
-      <Animated.View style={{alignItems: 'center', height: animatedHeight}}>
-        <Animated.View style={{marginBottom: 10, opacity: animatedOpacity}}>
-          <TextInput
-            onChangeText={text => setState({...state, text})}
-            value={state.text}
-            placeholder={'Molecule'}
-            placeholderTextColor={'#D7CCC8'}
-            style={styles.textInput}
-            selectTextOnFocus
-          />
-          {state.error && (
-            <Text style={styles.textError}>{state.error}</Text>
-          )}
+    <ImageBackground source={require('../assets/background.jpg')} style={{width: '100%', height: '100%'}}>
+      <View style={styles.mainContainer}>
+        <StatusBar backgroundColor='#61d38a' barStyle="light-content"/>
+        <Animated.View style={{alignItems: 'center', height: animatedHeight, alignSelf: 'stretch'}}>
+          <Animated.View style={{marginBottom: 10, alignSelf: 'stretch'}}>
+            <TextInput
+              onFocus={() => {
+                Animated.timing(animatedValueRef.current, ANIMATED_OUT_CONFIG).start(() => {
+                  setState({...state, atoms: null, error: null, text: ''});
+                });
+              }}
+              onChangeText={text => setState({...state, text})}
+              value={state.text}
+              placeholder={'Enter a Molecule'}
+              placeholderTextColor={'white'}
+              style={styles.textInput}
+              selectTextOnFocus
+            />
+            {state.error && (
+              <Text style={styles.textError}>{state.error}</Text>
+            )}
+          </Animated.View>
+          <Animated.View
+            style={{
+              width: animatedWidth,
+            }}>
+            <TouchableOpacity style={styles.button} activeOpacity={0.5} onPress={onPress}>
+              <Text style={styles.buttonText}>{state.atoms === null ? 'COUNT ATOMS' : 'RESET'}</Text>
+            </TouchableOpacity>
+          </Animated.View>
+          <AtomDisplay atoms={state.atoms}/>
         </Animated.View>
-        <Animated.View
-          style={{
-            width: animatedWidth,
-          }}>
-          <TouchableOpacity style={styles.button} activeOpacity={0.5} onPress={onPress}>
-            <Text style={styles.buttonText}>{state.atoms === null ? 'COUNT ATOMS' : 'RESET'}</Text>
-          </TouchableOpacity>
-        </Animated.View>
-        <AtomDisplay atoms={state.atoms}/>
-      </Animated.View>
-    </View>
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -109,21 +116,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: '#121212',
   },
   textInput: {
-    color: 'white',
-    borderWidth: 1,
-    borderColor: 'white',
-    borderRadius: 100,
+    color: '#1b1e80',
+    fontFamily: 'Montserrat-Black',
+    fontWeight: '800',
+    fontSize: 30,
     paddingHorizontal: 20,
-    height: 40,
-    width: Dimensions.get('window').width / 2 > 200 ? Dimensions.get('window').width / 2 : 200,
-    marginBottom: 5,
+    textAlign: 'center',
+    alignSelf: 'stretch',
+    height: 60,
   },
   textError: {
     color: '#f44336',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    fontFamily: 'Montserrat-Bold',
   },
   atomText: {
     color: 'white',
@@ -134,16 +141,16 @@ const styles = StyleSheet.create({
   },
   button: {
     borderWidth: 1,
-    borderColor: '#FF0266',
+    borderColor: 'white',
     borderRadius: 100,
     paddingHorizontal: 20,
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FF0266',
+    backgroundColor: 'white',
   },
   buttonText: {
-    color: 'white',
+    color: '#00e183',
   },
 });
 

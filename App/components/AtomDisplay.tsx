@@ -2,11 +2,11 @@ import React, {useRef, useState, useEffect} from 'react';
 import {Animated, Easing, StyleSheet, Text, View, Dimensions} from 'react-native';
 
 interface Props {
-  atoms: {[key: string]: number} | null;
+  atoms: { [key: string]: number } | null;
 }
 
 export default function AtomDisplay({atoms}: Props) {
-  const [atomsDisplayed, setAtomsDisplayed] = useState<{[key: string]: number} | null>(null);
+  const [atomsDisplayed, setAtomsDisplayed] = useState<{ [key: string]: number } | null>(null);
   const animatedValue = new Animated.Value(0);
   const animatedValueRef = useRef(animatedValue);
   const animatedOpacity = animatedValueRef.current.interpolate({
@@ -26,7 +26,7 @@ export default function AtomDisplay({atoms}: Props) {
     }
   }, [atoms]);
 
-  function appear(atoms: {[key: string]: number}) {
+  function appear(atoms: { [key: string]: number }) {
     setAtomsDisplayed(atoms);
     Animated.timing(animatedValueRef.current, {
       toValue: 1,
@@ -46,17 +46,18 @@ export default function AtomDisplay({atoms}: Props) {
   }
 
   return (
-    <Animated.View style={{marginTop: 10, transform: [{translateY: animatedTranslate}], opacity: animatedOpacity}}>
+    <Animated.View style={{marginTop: 10, flexDirection: 'row', transform: [{translateY: animatedTranslate}], opacity: animatedOpacity}}>
       {atomsDisplayed !== null &&
-        Object.keys(atomsDisplayed).map(key => {
-          return (
-            <View style={styles.atomContainer} key={key}>
-              <Text style={[styles.atomText, {fontWeight: 'bold'}]}>{key}</Text>
-              <Text style={styles.atomText}> ------> </Text>
-              <Text style={styles.atomText}>{atomsDisplayed[key]}</Text>
+      Object.keys(atomsDisplayed).map(key => {
+        return (
+          <View style={styles.atomContainer} key={key}>
+            <View style={styles.atomBubble}>
+              <Text style={styles.atomName}>{key}</Text>
             </View>
-          );
-        })}
+            <Text style={styles.atomCount}>{atomsDisplayed[key]}</Text>
+          </View>
+        );
+      })}
     </Animated.View>
   );
 }
@@ -68,8 +69,24 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 15,
   },
-  atomText: {
+  atomCount: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 18,
+    fontFamily: 'Montserrat-Bold',
+    alignSelf: 'center',
+    marginLeft: 10,
+  },
+  atomBubble: {
+    backgroundColor: '#1b1e80',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 30,
+    minWidth: 30,
+    borderRadius: 30,
+    paddingHorizontal: 5,
+  },
+  atomName: {
+    fontFamily: 'Montserrat-Black',
+    color: 'white',
   },
 });
