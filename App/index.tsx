@@ -26,12 +26,6 @@ const ANIMATED_OUT_CONFIG = {
   easing: Easing.circle,
 };
 
-interface State {
-  text: string;
-  atoms: {[key: string]: number} | null;
-  error: string | null;
-};
-
 const Index = () => {
   const [state, setState] = useState<State>({
     text: '',
@@ -142,5 +136,11 @@ const styles = StyleSheet.create({
     color: '#00e183',
   },
 });
+
+interface State {
+  text: string;
+  atoms: {[key: string]: number} | null;
+  error: string | null;
+};
 
 export default Index;

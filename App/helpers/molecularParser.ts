@@ -1,18 +1,22 @@
-function createStack(formula: string): Node[] {
-  let formatted = formula.replace(/[{(]/g, '[').replace(/[})]/g, ']');
+/**
+ * Seperates the molecule into a stack of atoms and brackets associated with their count
+ * @param molecule
+ */
+function createStack(molecule: string): Node[] {
+  let formatted = molecule.replace(/[{(]/g, '[').replace(/[})]/g, ']');
   let stack: Node[] = [];
   let regex = /((\[)|(\])|([A-Z][a-z]*))(\d*)/g;
   let matches;
 
-  if (formula.length === 0) {
-    throw FormulaError.EMPTY;
+  if (molecule.length === 0) {
+    throw MoleculeError.EMPTY;
   }
   while ((matches = regex.exec(formatted))) {
-    let [, , open, close, atomName, count] = matches;
+    let [, , openingBracket, closingBracket, atomName, count] = matches;
 
-    if (open || close) {
+    if (openingBracket || closingBracket) {
       stack.push({
-        type: open ? NodeType.Open : NodeType.Close,
+        type: openingBracket ? NodeType.Open : NodeType.Close,
         atom: '',
         count: count ? parseInt(count, 10) : 1,
       });
@@ -27,7 +31,7 @@ function createStack(formula: string): Node[] {
   return (stack);
 }
 
-function findBracket(stack: Node[], bracketType: NodeType, startPosition: number = 0): number {
+function findFirstBracket(stack: Node[], bracketType: NodeType, startPosition: number = 0): number {
   let bracketIndex = -1;
 
   for (let a = startPosition; a < stack.length; a++) {
@@ -38,21 +42,26 @@ function findBracket(stack: Node[], bracketType: NodeType, startPosition: number
   return bracketIndex;
 }
 
+/**
+ * Recursively goes through all the brackets in the stack to multiply the atoms within them
+ * @param stack
+ * @param position
+ * @param bracketOpened
+ */
 function parseStack(stack: Node[], position: number = 0, bracketOpened: boolean = false): Node[] {
   let bracketIndex: number;
 
   if (position === stack.length) {
-    throw FormulaError.INVALID;
+    throw MoleculeError.INVALID;
   }
   for (let index = position; index < stack.length; index++) {
-    if ((bracketIndex = findBracket(stack, NodeType.Open, position)) >= position) {
+    if ((bracketIndex = findFirstBracket(stack, NodeType.Open, position)) >= position) {
       stack = parseStack(stack, bracketIndex + 1, true);
       index--;
     } else if (bracketOpened) {
-      bracketIndex = findBracket(stack, NodeType.Close, position);
-      debugger;
+      bracketIndex = findFirstBracket(stack, NodeType.Close, position);
       if (bracketIndex === -1) {
-        throw FormulaError.BRACKET_NOT_CLOSED;
+        throw MoleculeError.BRACKET_NOT_CLOSED;
       } else {
         for (let a = position; a < bracketIndex; a++) {
           stack[a].count = stack[a].count * stack[bracketIndex].count;
@@ -67,18 +76,18 @@ function parseStack(stack: Node[], position: number = 0, bracketOpened: boolean 
 }
 
 function countAtoms(stack: Node[]) {
-  let atoms: { [key: string]: number } = {};
+  let atoms: {[key: string]: number} = {};
 
   for (let a = 0; a < stack.length; a++) {
     atoms[stack[a].atom] = atoms[stack[a].atom] ? atoms[stack[a].atom] + stack[a].count : stack[a].count;
   }
-  return (atoms);
+  return atoms;
 }
 
-export function findAtoms(formula: string) {
+export function findAtoms(molecule: string) {
   let stack: Node[];
 
-  stack = createStack(formula);
+  stack = createStack(molecule);
   stack = parseStack(stack);
   return countAtoms(stack);
 }
@@ -95,7 +104,7 @@ enum NodeType {
   Close,
 }
 
-export enum FormulaError {
+export enum MoleculeError {
   INVALID,
   EMPTY,
   BRACKET_NOT_CLOSED,
